@@ -1,0 +1,8 @@
+spring:
+  profiles:
+    active: dev
+  freemarker:
+    suffix: .ftl
+server:
+  port: 8080
+  context-path: /
