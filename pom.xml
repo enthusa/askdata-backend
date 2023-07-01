@@ -52,15 +52,41 @@
     </dependency>
     <dependency>
       <groupId>org.enthusa.avatar</groupId>
+      <artifactId>avatar-db</artifactId>
+      <version>master-SNAPSHOT</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/avatar-db-master-SNAPSHOT.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>org.enthusa.avatar</groupId>
       <artifactId>avatar-core</artifactId>
       <version>master-SNAPSHOT</version>
       <scope>system</scope>
       <systemPath>${project.basedir}/lib/avatar-core-master-SNAPSHOT.jar</systemPath>
     </dependency>
+    <dependency>
+      <groupId>org.enthusa.avatar</groupId>
+      <artifactId>avatar-utils</artifactId>
+      <version>master-SNAPSHOT</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/avatar-utils-master-SNAPSHOT.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>org.enthusa.avatar</groupId>
+      <artifactId>avatar-client</artifactId>
+      <version>master-SNAPSHOT</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/avatar-client-master-SNAPSHOT.jar</systemPath>
+    </dependency>
 
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>druid</artifactId>
+      <version>1.2.18</version>
     </dependency>
     <dependency>
       <groupId>org.mybatis</groupId>
@@ -71,6 +97,29 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-text</artifactId>
       <version>1.9</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-dbutils</groupId>
+      <artifactId>commons-dbutils</artifactId>
+      <version>1.7</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>30.0-jre</version>
+    </dependency>
+    <dependency>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>okhttp-sse</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpcore</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>fastjson</artifactId>
+      <version>1.2.83</version>
     </dependency>
     <dependency>
       <groupId>mysql</groupId>

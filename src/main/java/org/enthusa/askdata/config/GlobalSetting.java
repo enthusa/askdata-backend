@@ -15,4 +15,10 @@ import org.springframework.stereotype.Component;
 public class GlobalSetting {
     @Value("${settings.env}")
     private String env;
+
+    @Value("${settings.openai.host}")
+    private String openAiHost;
+
+    @Value("${settings.openai.key}")
+    private String openAiKey;
 }

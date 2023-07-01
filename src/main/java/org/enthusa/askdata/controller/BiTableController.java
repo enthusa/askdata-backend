@@ -1,7 +1,7 @@
 package org.enthusa.askdata.controller;
 
-import org.enthusa.askdata.entity.BiPost;
-import org.enthusa.askdata.mapper.BiPostMapper;
+import org.enthusa.askdata.entity.BiTable;
+import org.enthusa.askdata.mapper.BiTableMapper;
 import org.enthusa.avatar.face.type.PageModel;
 import org.enthusa.avatar.face.type.Result;
 import org.enthusa.avatar.face.utils.ResultUtil;
@@ -16,54 +16,54 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/bi")
-public class BiPostController {
+public class BiTableController {
     @Resource
-    private BiPostMapper biPostMapper;
+    private BiTableMapper biTableMapper;
 
-    @GetMapping("/posts")
+    @GetMapping("/tables")
     public Result index(
             @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(value = "pageSize", required = false, defaultValue = "20") Integer pageSize
     ) {
-        PageModel<BiPost> pageModel = new PageModel<>();
+        PageModel<BiTable> pageModel = new PageModel<>();
         pageModel.setPageAndPageSize(page, pageSize);
-        List<BiPost> postList = biPostMapper.selectByPage(pageModel);
-        pageModel.setList(postList);
+        List<BiTable> tableList = biTableMapper.selectByPage(pageModel);
+        pageModel.setList(tableList);
         return ResultUtil.success(pageModel);
     }
 
-    @GetMapping("/posts/{id}")
+    @GetMapping("/tables/{id}")
     public Result show(@PathVariable("id") Integer id) {
         Validate.idValid("id", id);
-        BiPost post = biPostMapper.selectByPrimaryKey(id);
-        Validate.hasRecord("id", id, post);
-        return ResultUtil.success(post);
+        BiTable table = biTableMapper.selectByPrimaryKey(id);
+        Validate.hasRecord("id", id, table);
+        return ResultUtil.success(table);
     }
 
-    @PostMapping("/posts")
-    public Result create(@RequestBody @Valid BiPost biPost, BindingResult bindingResult) {
+    @PostMapping("/tables")
+    public Result create(@RequestBody @Valid BiTable biTable, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             Validate.isRecord(true, bindingResult.getFieldError().getDefaultMessage());
         }
 
-        BiPost post = new BiPost();
-        BeanUtils.copyProperties(biPost, post);
-        biPostMapper.insertSelective(post);
-        return ResultUtil.success(post);
+        BiTable table = new BiTable();
+        BeanUtils.copyProperties(biTable, table);
+        biTableMapper.insertSelective(table);
+        return ResultUtil.success(table);
     }
 
-    @PutMapping("/posts/{id}")
-    public Result update(@PathVariable("id") Integer id, @RequestBody @Valid BiPost biPost, BindingResult bindingResult) {
+    @PutMapping("/tables/{id}")
+    public Result update(@PathVariable("id") Integer id, @RequestBody @Valid BiTable biTable, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             Validate.isRecord(true, bindingResult.getFieldError().getDefaultMessage());
         }
 
         Validate.idValid("id", id);
-        BiPost post = biPostMapper.selectByPrimaryKey(id);
-        Validate.hasRecord("id", id, post);
+        BiTable table = biTableMapper.selectByPrimaryKey(id);
+        Validate.hasRecord("id", id, table);
 
-        BeanUtils.copyProperties(biPost, post);
-        biPostMapper.updateByPrimaryKey(post);
-        return ResultUtil.success(post);
+        BeanUtils.copyProperties(biTable, table);
+        biTableMapper.updateByPrimaryKey(table);
+        return ResultUtil.success(table);
     }
 }

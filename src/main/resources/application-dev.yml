@@ -1,5 +1,8 @@
 settings:
   env: dev
+  openai:
+    host: from_command_line
+    key: from_command_line
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver

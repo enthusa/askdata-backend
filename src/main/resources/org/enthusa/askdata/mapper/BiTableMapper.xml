@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.enthusa.askdata.mapper.BiTableMapper">
+  <resultMap id="BaseResultMap" type="org.enthusa.askdata.entity.BiTable">
+    <id column="id" property="id" jdbcType="INTEGER"/>
+    <result column="ds_id" property="dsId" jdbcType="INTEGER"/>
+    <result column="catalog" property="catalog" jdbcType="VARCHAR"/>
+    <result column="name" property="name" jdbcType="VARCHAR"/>
+    <result column="brief" property="brief" jdbcType="VARCHAR"/>
+    <result column="remarks" property="remarks" jdbcType="VARCHAR"/>
+    <result column="owner_id" property="ownerId" jdbcType="INTEGER"/>
+    <result column="update_user_id" property="updateUserId" jdbcType="INTEGER"/>
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    <result column="status" property="status" jdbcType="INTEGER"/>
+    <result column="query_cnt" property="queryCnt" jdbcType="INTEGER"/>
+    <result column="query_user_cnt" property="queryUserCnt" jdbcType="INTEGER"/>
+    <result column="last_query_time" property="lastQueryTime" jdbcType="TIMESTAMP"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, ds_id, catalog, name, brief, remarks, owner_id, update_user_id, create_time, update_time, status, query_cnt,
+    query_user_cnt, last_query_time
+  </sql>
+  <select id="selectByDsIdAndCatalogAndName" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from bi_table
+    where ds_id = #{dsId,jdbcType=INTEGER}
+    and catalog = #{catalog,jdbcType=VARCHAR}
+    and name = #{name,jdbcType=VARCHAR}
+    limit 1
+  </select>
+  <insert id="insertSelective" parameterType="org.enthusa.askdata.entity.BiTable"
+          useGeneratedKeys="true" keyProperty="id">
+    insert into bi_table
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dsId != null">
+        ds_id,
+      </if>
+      <if test="catalog != null">
+        catalog,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="brief != null">
+        brief,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
+      <if test="ownerId != null">
+        owner_id,
+      </if>
+      <if test="updateUserId != null">
+        update_user_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="queryCnt != null">
+        query_cnt,
+      </if>
+      <if test="queryUserCnt != null">
+        query_user_cnt,
+      </if>
+      <if test="lastQueryTime != null">
+        last_query_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="dsId != null">
+        #{dsId,jdbcType=INTEGER},
+      </if>
+      <if test="catalog != null">
+        #{catalog,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="brief != null">
+        #{brief,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null">
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="ownerId != null">
+        #{ownerId,jdbcType=INTEGER},
+      </if>
+      <if test="updateUserId != null">
+        #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="queryCnt != null">
+        #{queryCnt,jdbcType=INTEGER},
+      </if>
+      <if test="queryUserCnt != null">
+        #{queryUserCnt,jdbcType=INTEGER},
+      </if>
+      <if test="lastQueryTime != null">
+        #{lastQueryTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.enthusa.askdata.entity.BiTable">
+    update bi_table
+    <set>
+      <if test="dsId != null">
+        ds_id = #{dsId,jdbcType=INTEGER},
+      </if>
+      <if test="catalog != null">
+        catalog = #{catalog,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="brief != null">
+        brief = #{brief,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="ownerId != null">
+        owner_id = #{ownerId,jdbcType=INTEGER},
+      </if>
+      <if test="updateUserId != null">
+        update_user_id = #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="queryCnt != null">
+        query_cnt = #{queryCnt,jdbcType=INTEGER},
+      </if>
+      <if test="queryUserCnt != null">
+        query_user_cnt = #{queryUserCnt,jdbcType=INTEGER},
+      </if>
+      <if test="lastQueryTime != null">
+        last_query_time = #{lastQueryTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="batchUpdateStatusByPrimaryKeys">
+    update bi_table set status = 1
+    where id in
+    <foreach item='item' collection='list' open='(' separator=',' close=')'>
+      #{item,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <update id="batchUpdateHotValue">
+    update bi_table
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="query_cnt = case" suffix="end,">
+        <foreach collection="list" item="table" index="index">
+          when id=#{table.id} then #{table.queryCnt}
+        </foreach>
+      </trim>
+
+      <trim prefix="query_user_cnt = case" suffix="end,">
+        <foreach collection="list" item="table" index="index">
+          when id=#{table.id} then #{table.queryUserCnt}
+        </foreach>
+      </trim>
+
+      <trim prefix="last_query_time = case" suffix="end,">
+        <foreach collection="list" item="table" index="index">
+          when id=#{table.id} then #{table.lastQueryTime}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach collection="list" index="index" item="table" separator="," open="(" close=")">
+      #{table.id}
+    </foreach>
+  </update>
+</mapper>

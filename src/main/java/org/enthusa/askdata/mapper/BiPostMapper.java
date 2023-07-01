@@ -1,7 +1,7 @@
 package org.enthusa.askdata.mapper;
 
-import org.enthusa.askdata.entity.BiPost;
 import org.apache.ibatis.annotations.Mapper;
+import org.enthusa.askdata.entity.BiPost;
 import org.enthusa.avatar.mybatis.mapper.SqlMapper;
 
 @Mapper

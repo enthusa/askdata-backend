@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.enthusa.askdata.mapper.BiFieldMapper">
+  <resultMap id="BaseResultMap" type="org.enthusa.askdata.entity.BiField">
+    <id column="id" property="id" jdbcType="INTEGER"/>
+    <result column="table_id" property="tableId" jdbcType="INTEGER"/>
+    <result column="column_seq" property="columnSeq" jdbcType="INTEGER"/>
+    <result column="primary_key_seq" property="primaryKeySeq" jdbcType="INTEGER"/>
+    <result column="refer_id" property="referId" jdbcType="INTEGER"/>
+    <result column="name" property="name" jdbcType="VARCHAR"/>
+    <result column="brief" property="brief" jdbcType="VARCHAR"/>
+    <result column="remarks" property="remarks" jdbcType="VARCHAR"/>
+    <result column="type_name" property="typeName" jdbcType="VARCHAR"/>
+    <result column="column_size" property="columnSize" jdbcType="INTEGER"/>
+    <result column="is_auto_increment" property="isAutoIncrement" jdbcType="BIT"/>
+    <result column="is_nullable" property="isNullable" jdbcType="BIT"/>
+    <result column="default_value" property="defaultValue" jdbcType="VARCHAR"/>
+    <result column="is_enumerable" property="isEnumerable" jdbcType="BIT"/>
+    <result column="options" property="options" jdbcType="VARCHAR"/>
+    <result column="update_user_id" property="updateUserId" jdbcType="INTEGER"/>
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    <result column="status" property="status" jdbcType="INTEGER"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, table_id, column_seq, primary_key_seq, refer_id, name, brief, remarks, type_name, column_size, is_auto_increment, is_nullable, default_value, is_enumerable, options, update_user_id, create_time, update_time, status
+  </sql>
+  <select id="selectByNameWithInfo" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from bi_field
+    where name = #{name,jdbcType=VARCHAR}
+    and (length(brief) > 0 or length(remarks) > 0)
+  </select>
+  <select id="selectByTableIdAndName" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from bi_field
+    where table_id = #{tableId,jdbcType=INTEGER}
+    and name = #{name,jdbcType=VARCHAR}
+    limit 1
+  </select>
+  <select id="selectTableIdsByName" resultType="java.lang.Integer">
+    select
+    distinct table_id
+    from bi_field
+    where name = #{name,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByTableIds" resultMap="BaseResultMap">
+    select * from bi_field
+    where table_id in
+    <foreach item='item' collection='list' open='(' separator=',' close=')'>
+      #{item,jdbcType=BIGINT}
+    </foreach>
+  </select>
+  <insert id="insertSelective" parameterType="org.enthusa.askdata.entity.BiField"
+          useGeneratedKeys="true" keyProperty="id">
+    insert into bi_field
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="tableId != null">
+        table_id,
+      </if>
+      <if test="columnSeq != null">
+        column_seq,
+      </if>
+      <if test="primaryKeySeq != null">
+        primary_key_seq,
+      </if>
+      <if test="referId != null">
+        refer_id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="brief != null">
+        brief,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
+      <if test="typeName != null">
+        type_name,
+      </if>
+      <if test="columnSize != null">
+        column_size,
+      </if>
+      <if test="isAutoIncrement != null">
+        is_auto_increment,
+      </if>
+      <if test="isNullable != null">
+        is_nullable,
+      </if>
+      <if test="defaultValue != null">
+        default_value,
+      </if>
+      <if test="isEnumerable != null">
+        is_enumerable,
+      </if>
+      <if test="options != null">
+        options,
+      </if>
+      <if test="updateUserId != null">
+        update_user_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="tableId != null">
+        #{tableId,jdbcType=INTEGER},
+      </if>
+      <if test="columnSeq != null">
+        #{columnSeq,jdbcType=INTEGER},
+      </if>
+      <if test="primaryKeySeq != null">
+        #{primaryKeySeq,jdbcType=INTEGER},
+      </if>
+      <if test="referId != null">
+        #{referId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="brief != null">
+        #{brief,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null">
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="typeName != null">
+        #{typeName,jdbcType=VARCHAR},
+      </if>
+      <if test="columnSize != null">
+        #{columnSize,jdbcType=INTEGER},
+      </if>
+      <if test="isAutoIncrement != null">
+        #{isAutoIncrement,jdbcType=BIT},
+      </if>
+      <if test="isNullable != null">
+        #{isNullable,jdbcType=BIT},
+      </if>
+      <if test="defaultValue != null">
+        #{defaultValue,jdbcType=VARCHAR},
+      </if>
+      <if test="isEnumerable != null">
+        #{isEnumerable,jdbcType=BIT},
+      </if>
+      <if test="options != null">
+        #{options,jdbcType=VARCHAR},
+      </if>
+      <if test="updateUserId != null">
+        #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.enthusa.askdata.entity.BiField">
+    update bi_field
+    <set>
+      <if test="tableId != null">
+        table_id = #{tableId,jdbcType=INTEGER},
+      </if>
+      <if test="columnSeq != null">
+        column_seq = #{columnSeq,jdbcType=INTEGER},
+      </if>
+      <if test="primaryKeySeq != null">
+        primary_key_seq = #{primaryKeySeq,jdbcType=INTEGER},
+      </if>
+      <if test="referId != null">
+        refer_id = #{referId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="brief != null">
+        brief = #{brief,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="typeName != null">
+        type_name = #{typeName,jdbcType=VARCHAR},
+      </if>
+      <if test="columnSize != null">
+        column_size = #{columnSize,jdbcType=INTEGER},
+      </if>
+      <if test="isAutoIncrement != null">
+        is_auto_increment = #{isAutoIncrement,jdbcType=BIT},
+      </if>
+      <if test="isNullable != null">
+        is_nullable = #{isNullable,jdbcType=BIT},
+      </if>
+      <if test="defaultValue != null">
+        default_value = #{defaultValue,jdbcType=VARCHAR},
+      </if>
+      <if test="isEnumerable != null">
+        is_enumerable = #{isEnumerable,jdbcType=BIT},
+      </if>
+      <if test="options != null">
+        options = #{options,jdbcType=VARCHAR},
+      </if>
+      <if test="updateUserId != null">
+        update_user_id = #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="batchUpdateStatusByPrimaryKeys">
+    update bi_field set status = 1
+    where id in
+    <foreach item='item' collection='list' open='(' separator=',' close=')'>
+      #{item,jdbcType=BIGINT}
+    </foreach>
+  </update>
+</mapper>
