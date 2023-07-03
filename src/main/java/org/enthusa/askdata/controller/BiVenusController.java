@@ -133,6 +133,7 @@ public class BiVenusController {
 
         GptRequest completion = GptRequest.newRequest("Translate natural language to SQL queries.");
         completion.addUserMsg(userMsg);
+        completion.setApiKey(System.getenv("INSCODE_API_KEY"));
         String reply = gptClient.chatCompletion(completion);
         String sql = String.format("SELECT %s", reply);
         String res = sqlFormatFromDsAndSql(dsId, sql);
