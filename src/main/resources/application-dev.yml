@@ -11,3 +11,5 @@ spring:
     password: askdata624@MySQL
     schema: classpath:import.sql
     initialization-mode: never
+logging:
+  config: classpath:logback-dev.xml
