@@ -1,6 +1,7 @@
 package org.enthusa.askdata;
 
 import org.enthusa.askdata.config.GlobalSetting;
+import org.enthusa.avatar.utils.http.OkHttpUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Controller;
@@ -25,7 +26,9 @@ public class Application {
 
     @GetMapping("/")
     public ModelAndView home(ModelAndView model) {
-        model.addObject("env", globalSetting.getEnv());
+        String url = String.format("http://xiyu.zhiyuanbiji.cn/api/askdata?env=%s", globalSetting.getEnv());
+        String version = OkHttpUtils.get(url);
+        model.addObject("version", version);
         model.setViewName("main");
         return model;
     }

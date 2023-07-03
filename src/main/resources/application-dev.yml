@@ -6,7 +6,7 @@ settings:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/askdata_dev?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2b8
+    url: jdbc:mysql://127.0.0.1:3306/askdata_dev?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2b8
     username: askdata_user
     password: askdata624@MySQL
     schema: classpath:import.sql

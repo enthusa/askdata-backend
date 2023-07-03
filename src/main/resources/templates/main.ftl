@@ -11,11 +11,11 @@
     <meta name='apple-mobile-web-app-capable' content='yes'>
     <link href='//kysw-static.oss-cn-qingdao.aliyuncs.com/david.ico' rel='shortcut icon'>
     <link href='//kysw-static.oss-cn-qingdao.aliyuncs.com/david.ico' rel='apple-touch-icon'>
-    <link href='https://kysw-static.oss-cn-qingdao.aliyuncs.com/askdata-${(env)!}.css' rel='stylesheet'>
+    <link href='https://kysw-static.oss-cn-qingdao.aliyuncs.com/askdata${(version)!}.css' rel='stylesheet'>
     <title>问数</title>
 </head>
 <body ontouchstart>
 <div id='app'></div>
-<script type='text/javascript' src='https://kysw-static.oss-cn-qingdao.aliyuncs.com/askdata-${(env)!}.js'></script>
+<script type='text/javascript' src='https://kysw-static.oss-cn-qingdao.aliyuncs.com/askdata${(version)!}.js'></script>
 </body>
 </html>
