@@ -6,6 +6,7 @@ import org.enthusa.askdata.ext.inscode.GptRequest;
 import org.junit.Test;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 
 /**
  * @author henry
@@ -19,6 +20,7 @@ public class ChatGptTest extends AbstractTest {
     public void test() throws InterruptedException {
         GptRequest request = GptRequest.newRequest("Translate natural language to SQL queries.");
         request.addUserMsg("你能做什么?");
+        request.setStop(Arrays.asList("#", ";"));
         request.setApiKey(System.getenv("INSCODE_API_KEY"));
         System.out.println(gptClient.chatCompletion(request));
     }

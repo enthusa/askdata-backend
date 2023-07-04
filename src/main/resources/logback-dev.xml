@@ -23,7 +23,7 @@
     </encoder>
   </appender>
 
-  <logger name="com.nowcoder" level="DEBUG"/>
+  <logger name="org.enthusa" level="DEBUG"/>
 
   <root level="INFO">
     <appender-ref ref="STDOUT"/>

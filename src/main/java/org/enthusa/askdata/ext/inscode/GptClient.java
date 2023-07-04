@@ -40,6 +40,7 @@ public class GptClient {
 
     public String chatCompletion(GptRequest completion) {
         String json = JSON.toJSONString(completion);
+        log.debug("GptRequest: {}", json);
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
         Request request = new Request.Builder()
