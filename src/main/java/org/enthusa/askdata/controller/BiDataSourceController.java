@@ -1,12 +1,9 @@
 package org.enthusa.askdata.controller;
 
-import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.enthusa.askdata.entity.BiDataSource;
 import org.enthusa.askdata.mapper.BiDataSourceMapper;
 import org.enthusa.askdata.task.impl.FillMetaDataTask;
-import org.enthusa.avatar.core.consts.TextConstant;
 import org.enthusa.avatar.db.metadata.MetaDataUtils;
 import org.enthusa.avatar.face.type.PageModel;
 import org.enthusa.avatar.face.type.Result;
@@ -23,7 +20,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -39,7 +36,7 @@ public class BiDataSourceController {
     @GetMapping("/catalogs")
     public Result getAllCatalogs() {
         List<String> catalogs = biDataSourceMapper.selectAll().stream().flatMap(source -> {
-            fillCatalogList(source);
+            source.fillDerivedFieldsFromDatabase();
             return source.getCatalogList().stream();
         }).collect(Collectors.toList());
         return ResultUtil.success(catalogs);
@@ -61,14 +58,11 @@ public class BiDataSourceController {
     public Result show(Model model, @PathVariable("id") Integer id) throws IOException {
         Validate.idValid("id", id);
         BiDataSource dataSource = biDataSourceMapper.selectByPrimaryKey(id);
-        fillCatalogList(dataSource);
-        fillDetailObject(dataSource);
         Validate.hasRecord("id", id, dataSource);
+        dataSource.fillDerivedFieldsFromDatabase();
         model.addAttribute("dataSource", dataSource);
 
-        byte[] bytes = Base64.getDecoder().decode(dataSource.getDetails());
-        Properties info = JSON.parseObject(new String(bytes), Properties.class);
-        try (Connection conn = DriverManager.getConnection(info.getProperty("url"), info)) {
+        try (Connection conn = DriverManager.getConnection(dataSource.getJdbcUrl(), dataSource.getUser(), dataSource.getPassword())) {
             List<String> catalogs = MetaDataUtils.getCatalogs(conn.getMetaData());
             model.addAttribute("catalogs", catalogs);
         } catch (SQLException e) {
@@ -85,10 +79,9 @@ public class BiDataSourceController {
 
         BiDataSource dataSource = new BiDataSource();
         BeanUtils.copyProperties(biDataSource, dataSource);
-        fillCatalogs(dataSource);
-        fillDetails(dataSource);
-        fillMetaDataTask.start();
+        dataSource.convertToDatabaseValue();
         biDataSourceMapper.insertSelective(dataSource);
+        fillMetaDataTask.start();
         return ResultUtil.success(dataSource);
     }
 
@@ -103,39 +96,9 @@ public class BiDataSourceController {
         Validate.hasRecord("id", id, dataSource);
 
         BeanUtils.copyProperties(biDataSource, dataSource);
-        fillCatalogs(dataSource);
-        fillDetails(dataSource);
-        fillMetaDataTask.start();
+        dataSource.convertToDatabaseValue();
         biDataSourceMapper.updateByPrimaryKeySelective(dataSource);
+        fillMetaDataTask.start();
         return ResultUtil.success(dataSource);
-    }
-
-    private void fillCatalogList(BiDataSource dataSource) {
-        dataSource.setCatalogList(TextConstant.COMMA_SPLITTER.splitToList(StringUtils.defaultString(dataSource.getCatalogs())));
-    }
-
-    private void fillCatalogs(BiDataSource dataSource) {
-        dataSource.setCatalogs(TextConstant.COMMA_JOINER.join(Optional.ofNullable(dataSource.getCatalogList()).orElse(Collections.emptyList())));
-    }
-
-    private void fillDetailObject(BiDataSource dataSource) {
-        byte[] bytes = Base64.getDecoder().decode(dataSource.getDetails());
-        Properties info = JSON.parseObject(new String(bytes), Properties.class);
-        dataSource.setUrl(info.getProperty("url"));
-        dataSource.setUser(info.getProperty("user"));
-        dataSource.setPassword(info.getProperty("password"));
-    }
-
-    private void fillDetails(BiDataSource dataSource) {
-        if (StringUtils.isAnyBlank(dataSource.getUrl(), dataSource.getUser(), dataSource.getPassword())) {
-            return;
-        }
-        Properties config = new Properties();
-        config.setProperty("url", dataSource.getUrl().trim());
-        config.setProperty("user", dataSource.getUser().trim());
-        config.setProperty("password", dataSource.getPassword().trim());
-        String text = JSON.toJSONString(config);
-        String details = Base64.getEncoder().encodeToString(text.getBytes());
-        dataSource.setDetails(details);
     }
 }

@@ -21,4 +21,19 @@ public class GlobalSetting {
 
     @Value("${settings.openai.key}")
     private String openAiKey;
+
+    @Value("${settings.mysql.host}")
+    private String dbHost;
+
+    @Value("${settings.mysql.port}")
+    private String dbPort;
+
+    @Value("${settings.mysql.name}")
+    private String dbName;
+
+    @Value("${settings.mysql.user}")
+    private String dbUsername;
+
+    @Value("${settings.mysql.pass}")
+    private String dbPassword;
 }

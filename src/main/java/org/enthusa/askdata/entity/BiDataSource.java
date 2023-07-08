@@ -1,10 +1,13 @@
 package org.enthusa.askdata.entity;
 
+import com.alibaba.fastjson.JSON;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
+import org.enthusa.askdata.common.Consts;
+import org.enthusa.avatar.core.consts.TextConstant;
 import org.enthusa.avatar.mybatis.annotation.Transient;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Data
 public class BiDataSource {
@@ -24,7 +27,13 @@ public class BiDataSource {
     private String details;
 
     @Transient
-    private String url;
+    private String dbHost;
+    @Transient
+    private String dbPort;
+    @Transient
+    private String dbName;
+    @Transient
+    private String jdbcUrl;
     @Transient
     private String user;
     @Transient
@@ -58,5 +67,31 @@ public class BiDataSource {
 
     public void setCatalogs(String catalogs) {
         this.catalogs = catalogs == null ? null : catalogs.trim();
+    }
+
+    public void fillDerivedFieldsFromDatabase() {
+        catalogList = TextConstant.COMMA_SPLITTER.splitToList(StringUtils.defaultString(catalogs));
+
+        byte[] bytes = Base64.getDecoder().decode(details);
+        Properties info = JSON.parseObject(new String(bytes), Properties.class);
+        dbHost = info.getProperty("dbHost");
+        dbPort = info.getProperty("dbPort");
+        dbName = info.getProperty("dbName");
+        jdbcUrl = String.format("jdbc:mysql://%s:%s/%s?%s", dbHost, dbPort, dbName, Consts.MYSQL_JDBC_URL_DECORATOR);
+        user = info.getProperty("user");
+        password = info.getProperty("password");
+    }
+
+    public void convertToDatabaseValue() {
+        catalogs = TextConstant.COMMA_JOINER.join(Optional.ofNullable(catalogList).orElse(Collections.emptyList()));
+
+        Properties config = new Properties();
+        config.setProperty("dbHost", dbHost.trim());
+        config.setProperty("dbPort", dbPort.trim());
+        config.setProperty("dbName", dbName.trim());
+        config.setProperty("user", user.trim());
+        config.setProperty("password", password.trim());
+        String text = JSON.toJSONString(config);
+        details = Base64.getEncoder().encodeToString(text.getBytes());
     }
 }

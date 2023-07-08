@@ -1,6 +1,5 @@
 package org.enthusa.askdata.task.impl;
 
-import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.enthusa.askdata.dao.BiFieldDao;
@@ -12,7 +11,6 @@ import org.enthusa.askdata.mapper.BiDataSourceMapper;
 import org.enthusa.askdata.mapper.BiFieldMapper;
 import org.enthusa.askdata.mapper.BiTableMapper;
 import org.enthusa.askdata.task.AbstractTask;
-import org.enthusa.avatar.core.consts.TextConstant;
 import org.enthusa.avatar.db.metadata.ColumnEntity;
 import org.enthusa.avatar.db.metadata.MetaDataUtils;
 import org.enthusa.avatar.db.metadata.TableEntity;
@@ -24,7 +22,9 @@ import javax.annotation.Resource;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -57,12 +57,10 @@ public class FillMetaDataTask extends AbstractTask {
         Set<Integer> biFieldsAfter = new HashSet<>();
         List<BiDataSource> dsList = biDataSourceMapper.selectAll();
         for (BiDataSource ds : dsList) {
-            byte[] bytes = Base64.getDecoder().decode(ds.getDetails());
-            Properties info = JSON.parseObject(new String(bytes), Properties.class);
-            List<String> catalogs = TextConstant.COMMA_SPLITTER.splitToList(ds.getCatalogs());
-            try (Connection conn = DriverManager.getConnection(info.getProperty("url"), info)) {
+            ds.fillDerivedFieldsFromDatabase();
+            try (Connection conn = DriverManager.getConnection(ds.getJdbcUrl(), ds.getUser(), ds.getPassword())) {
                 DatabaseMetaData metaData = conn.getMetaData();
-                for (String catalog : catalogs) {
+                for (String catalog : ds.getCatalogList()) {
                     List<TableEntity> tables = MetaDataUtils.getTables(metaData, catalog);
                     for (TableEntity table : tables) {
                         if (StringUtils.containsAny(table.getName(), "tmp", "temp", "bak", "backup")

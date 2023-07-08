@@ -1,7 +1,6 @@
 package org.enthusa.askdata.controller;
 
 import com.alibaba.druid.sql.SQLUtils;
-import com.alibaba.fastjson.JSON;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbutils.QueryRunner;
@@ -101,9 +100,8 @@ public class BiVenusController {
 
     private Connection getConnection(Integer dsId) throws SQLException {
         BiDataSource ds = biDataSourceMapper.selectByPrimaryKey(dsId);
-        byte[] bytes = Base64.getDecoder().decode(ds.getDetails());
-        Properties info = JSON.parseObject(new String(bytes), Properties.class);
-        return DriverManager.getConnection(info.getProperty("url"), info);
+        ds.fillDerivedFieldsFromDatabase();
+        return DriverManager.getConnection(ds.getJdbcUrl(), ds.getUser(), ds.getPassword());
 
     }
 

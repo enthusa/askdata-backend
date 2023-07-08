@@ -3,11 +3,11 @@ settings:
   openai:
     host: from_command_line
     key: from_command_line
-spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mysql.inscode.run:3306/askdata_prod?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2b8
-    username: root
-    password: inscode
+  mysql:
+    host: mysql.inscode.run
+    port: 3306
+    name: askdata_prod
+    user: root
+    pass: inscode
 logging:
   config: classpath:logback-prod.xml
