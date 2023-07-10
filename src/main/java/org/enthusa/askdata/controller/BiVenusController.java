@@ -135,6 +135,7 @@ public class BiVenusController {
         completion.addUserMsg(userMsg);
         completion.setApiKey(System.getenv("INSCODE_API_KEY"));
         String reply = gptClient.chatCompletion(completion);
+        reply = StringUtils.split(reply, ';')[0];
         String sql = String.format("SELECT %s", reply);
         String res = sqlFormatFromDsAndSql(dsId, sql);
         long end = System.currentTimeMillis();
