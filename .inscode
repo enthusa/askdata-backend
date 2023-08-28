@@ -1,1 +1,5 @@
 run = "update-java-alternatives --set java-1.8.0-openjdk-amd64 && mvn -DskipTests package && java -jar target/askdata-backend-1.0-SNAPSHOT.jar --spring.profiles.active=prod"
+language = "java"
+
+[debugger]
+program = "Main"
